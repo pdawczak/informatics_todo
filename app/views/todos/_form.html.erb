@@ -1,0 +1,33 @@
+<%= form_for(@todo, html: {class: 'form-horizontal'}) do |f| %>
+  <% if @todo.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@todo.errors.count, "error") %> prohibited this todo from being saved:</h2>
+
+      <ul>
+      <% @todo.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :description, class: 'control-label' %>
+    <%= f.text_area :description, class: 'form-control' %>
+  </div>
+  <div class="form-group">
+    <%= f.label :status, class: 'control-label' %><br>
+    <%= f.select :status, Todo.status.options, class: 'form-control' %>
+  </div>
+  <div class="form-group">
+    <%= f.label :requester_id, class: 'control-label' %><br>
+    <%= f.select :requester_id, @users.map{ |u| [u.name, u.id]}, class: 'form-control' %>
+  </div>
+  <div class="form-group">
+    <%= f.label :assignee_id, class: 'control-label' %><br>
+    <%= f.select :assignee_id, @users.map{ |u| [u.name, u.id]}, class: 'form-control' %>
+  </div>
+  <div class="form-group">
+    <%= f.submit class: 'btn btn-default' %>
+  </div>
+<% end %>

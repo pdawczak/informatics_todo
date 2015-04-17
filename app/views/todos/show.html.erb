@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @todo.description %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @todo.status %>
+</p>
+
+<p>
+  <strong>Requester:</strong>
+  <%= @todo.requester.try(:name) %>
+</p>
+
+<p>
+  <strong>Assignee:</strong>
+  <%= @todo.assignee.try(:name) %>
+</p>
+
+<%= link_to 'Edit', edit_todo_path(@todo) %> |
+<%= link_to 'Back', todos_path %>

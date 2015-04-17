@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  description: MyText
+  status: 1
+  requester_id: 1
+  assignee_id: 1
+
+two:
+  description: MyText
+  status: 1
+  requester_id: 1
+  assignee_id: 1

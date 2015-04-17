@@ -1,0 +1,39 @@
+<h1>Listing todos</h1>
+
+<%= @done.size %> done, <%= @started.size %> started, <%= @new.size %> new
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= sortable :description %></th>
+      <th><%= sortable :status %></th>
+      <th>Requester</th>
+      <th>Assignee</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @todos.each do |todo| %>
+      <tr>
+        <td><%= todo.description %></td>
+        <td>
+          <span class="label label-<%= if todo.status == 'done' then 'success'; elsif todo.status == 'started' then 'warning'; else 'default' end%>">
+            <%= todo.status %>
+          </span>
+        </td>
+        <td><%= todo.requester.try(:name) %></td>
+        <td><%= todo.assignee.try(:name) %></td>
+        <td><%= link_to 'Show', todo %></td>
+        <td><%= link_to 'Edit', edit_todo_path(todo) %></td>
+        <td><%= link_to 'Destroy', todo, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Todo', new_todo_path %>
