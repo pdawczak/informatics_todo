@@ -51,11 +51,12 @@ class TodosController < ApplicationController
     end
 
     def sort_column
-      sort = params[:sort].try(:to_sym)
-      sort && [:description, :status].include?(sort) ? sort : :description
+      sort = params[:sort]
+      sort && ["description", "status", "requester"].include?(sort) ? sort : "description"
     end
 
     def sort_direction
-      params[:direction] || 'asc'
+      direction = params[:direction]
+      direction && ["asc", "desc"].include?(direction) ? direction : "asc"
     end
 end
