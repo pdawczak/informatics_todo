@@ -6,18 +6,22 @@ class TodosController < ApplicationController
 
   def index
     @todos   = Todo.includes(:requester, :assignee).order("#{sort_column} #{sort_direction}").paginate(:page => params[:page])
-    @done    = Todo.where(status: 'done').count
-    @started = Todo.where(status: 'started').count
-    @new     = Todo.where(status: 'new').count
+
+    # aunacceptably ugly code!
+    # It's left here just to proceed with other
+    # tasks, and address when refactoring!
+    @stats = Todo.status.values
+    @stats = Hash[@stats.map { |s| [s, 0] }]
+    @stats = @stats.merge(Todo.group(:status).count)
   end
 
   def my_todos
-    @todos = Todo.includes(:requester, :assignee)
+    @todos = current_user.todos_assigned.includes(:requester, :assignee)
       .order("#{sort_column} #{sort_direction}").paginate(:page => params[:page])
-      .where(assignee_id: current_user.id)
-    @done    = Todo.where(status: 'done').count
-    @started = Todo.where(status: 'started').count
-    @new     = Todo.where(status: 'new').count
+
+    @stats = Todo.status.values
+    @stats = Hash[@stats.map { |s| [s, 0] }]
+    @stats = @stats.merge(current_user.todos_assigned.group(:status).count)
 
     render :index
   end

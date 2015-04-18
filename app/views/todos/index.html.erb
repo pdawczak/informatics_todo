@@ -1,6 +1,6 @@
 <h1>Listing todos</h1>
 
-<%= @done %> done, <%= @started %> started, <%= @new %> new
+<%= format_stats(@stats) %>
 
 <table class="table table-striped">
   <thead>
