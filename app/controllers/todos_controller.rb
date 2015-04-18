@@ -5,19 +5,34 @@ class TodosController < ApplicationController
   respond_to :html
 
   def index
-    @todos   = Todo.includes(:requester, :assignee).order("#{sort_column} #{sort_direction}").paginate(:page => params[:page])
-
     # aunacceptably ugly code!
     # It's left here just to proceed with other
     # tasks, and address when refactoring!
+    @todos = Todo
+    @todos = @todos.joins(join) unless join.nil?
+
+    sort_column_to_use = sort_column
+    sort_column_to_use = "rel.email" if %(requester assignee).include?(sort_column_to_use)
+
+    @todos = @todos.includes(:requester, :assignee)
+                   .order("#{sort_column_to_use} #{sort_direction}")
+                   .paginate(:page => params[:page])
+
     @stats = Todo.status.values
     @stats = Hash[@stats.map { |s| [s, 0] }]
     @stats = @stats.merge(Todo.group(:status).count)
   end
 
   def my_todos
-    @todos = current_user.todos_assigned.includes(:requester, :assignee)
-      .order("#{sort_column} #{sort_direction}").paginate(:page => params[:page])
+    @todos = current_user.todos_assigned
+    @todos = @todos.joins(join) unless join.nil?
+
+    sort_column_to_use = sort_column
+    sort_column_to_use = "rel.email" if %(requester assignee).include?(sort_column_to_use)
+
+    @todos = @todos.includes(:requester, :assignee)
+                   .order("#{sort_column_to_use} #{sort_direction}")
+                   .paginate(:page => params[:page])
 
     @stats = Todo.status.values
     @stats = Hash[@stats.map { |s| [s, 0] }]
@@ -68,7 +83,14 @@ class TodosController < ApplicationController
 
     def sort_column
       sort = params[:sort]
-      sort && ["description", "status", "requester"].include?(sort) ? sort : "description"
+      sort && %w(description status requester assignee).include?(sort) ? sort : "description"
+    end
+
+    def join
+      sort = params[:sort]
+      if ["requester", "assignee"].include?(sort)
+        "INNER JOIN 'users' 'rel' ON 'rel'.'id' = 'todos'.'#{sort}_id'"
+      end
     end
 
     def sort_direction
