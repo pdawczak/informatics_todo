@@ -20,5 +20,10 @@
   <%= @todo.assignee.try(:name) %>
 </p>
 
+<p>
+  <strong>Deadline:</strong>
+  <%= @todo.deadline %>
+</p>
+
 <%= link_to 'Edit', edit_todo_path(@todo) %> |
 <%= link_to 'Back', todos_path %>
