@@ -1,6 +1,6 @@
 <h1>Listing todos</h1>
 
-<%= format_stats(@stats) %>
+<%= format_stats(@presenter.stats) %>
 
 <table class="table table-striped">
   <thead>
@@ -16,7 +16,7 @@
   </thead>
 
   <tbody>
-    <% @todos.each do |todo| %>
+    <% @presenter.todos.each do |todo| %>
       <tr class="<%= todo.deadline_exceeded? ? "danger" : nil %>">
         <td><%= todo.description %></td>
         <td>
@@ -34,7 +34,7 @@
   </tbody>
 </table>
 
-<%= will_paginate @todos, renderer: BootstrapPagination::Rails %>
+<%= will_paginate @presenter.todos, renderer: BootstrapPagination::Rails %>
 
 <br>
 

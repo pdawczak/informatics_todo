@@ -7,38 +7,16 @@ class TodosController < ApplicationController
   respond_to :html
 
   def index
-    # aunacceptably ugly code!
-    # It's left here just to proceed with other
-    # tasks, and address when refactoring!
-    @todos = Todo
-    @todos = @todos.joins(join) unless join.nil?
-
-    sort_column_to_use = sort_column
-    sort_column_to_use = "rel.email" if %(requester assignee).include?(sort_column_to_use)
-
-    @todos = @todos.includes(:requester, :assignee)
-                   .order("#{sort_column_to_use} #{sort_direction}")
-                   .paginate(:page => params[:page])
-
-    @stats = Todo.status.values
-    @stats = Hash[@stats.map { |s| [s, 0] }]
-    @stats = @stats.merge(Todo.group(:status).count)
+    @presenter = TodoPresenter.new(sort_column:    sort_column,
+                                   sort_direction: sort_direction,
+                                   page:           params[:page])
   end
 
   def my_todos
-    @todos = current_user.todos_assigned
-    @todos = @todos.joins(join) unless join.nil?
-
-    sort_column_to_use = sort_column
-    sort_column_to_use = "rel.email" if %(requester assignee).include?(sort_column_to_use)
-
-    @todos = @todos.includes(:requester, :assignee)
-                   .order("#{sort_column_to_use} #{sort_direction}")
-                   .paginate(:page => params[:page])
-
-    @stats = Todo.status.values
-    @stats = Hash[@stats.map { |s| [s, 0] }]
-    @stats = @stats.merge(current_user.todos_assigned.group(:status).count)
+    @presenter = TodoPresenter.new(root:           current_user.todos_assigned,
+                                   sort_column:    sort_column,
+                                   sort_direction: sort_direction,
+                                   page:           params[:page])
 
     render :index
   end
@@ -78,13 +56,6 @@ class TodosController < ApplicationController
     def sort_column
       sort = params[:sort]
       sort && %w(description status requester assignee).include?(sort) ? sort : "description"
-    end
-
-    def join
-      sort = params[:sort]
-      if ["requester", "assignee"].include?(sort)
-        "INNER JOIN 'users' 'rel' ON 'rel'.'id' = 'todos'.'#{sort}_id'"
-      end
     end
 
     def sort_direction
