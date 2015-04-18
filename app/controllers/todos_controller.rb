@@ -1,6 +1,8 @@
 class TodosController < ApplicationController
   before_action :authenticate_user!
   helper_method :sort_column, :sort_direction
+  before_action :set_todo, only: [:show, :edit, :update, :destroy]
+  before_action :set_users, only: [:new, :edit, :create, :update]
 
   respond_to :html
 
@@ -42,36 +44,28 @@ class TodosController < ApplicationController
   end
 
   def show
-    @todo = Todo.find(params[:id])
     respond_with(@todo)
   end
 
   def new
-    @users = User.order(:email)
-    @todo = Todo.new
-    @todo.requester = current_user
+    @todo = Todo.new(requester: current_user)
     respond_with(@todo)
   end
 
   def edit
-    @todo = Todo.find(params[:id])
-    @users = User.order(:email)
   end
 
   def create
-    @todo = Todo.new(todo_params)
-    @users = User.order(:email) unless @todo.save
+    @todo = Todo.create(todo_params)
     respond_with(@todo)
   end
 
   def update
-    @todo = Todo.find(params[:id])
-    @users = User.order(:email) unless @todo.update(todo_params)
+    @todo.update(todo_params)
     respond_with(@todo)
   end
 
   def destroy
-    @todo = Todo.find(params[:id])
     @todo.destroy
     respond_with(@todo)
   end
@@ -96,5 +90,13 @@ class TodosController < ApplicationController
     def sort_direction
       direction = params[:direction]
       direction && ["asc", "desc"].include?(direction) ? direction : "asc"
+    end
+
+    def set_todo
+      @todo = Todo.find(params[:id])
+    end
+
+    def set_users
+      @users = User.order(:email)
     end
 end
