@@ -1,13 +1,13 @@
 <h1>Listing todos</h1>
 
-<%= @done.size %> done, <%= @started.size %> started, <%= @new.size %> new
+<%= @done %> done, <%= @started %> started, <%= @new %> new
 
 <table class="table table-striped">
   <thead>
     <tr>
       <th><%= sortable :description %></th>
       <th><%= sortable :status %></th>
-      <th><%= sortable :requester %></th>
+      <th>Reqester</th>
       <th>Assignee</th>
       <th></th>
       <th></th>

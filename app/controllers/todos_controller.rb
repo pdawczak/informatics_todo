@@ -5,10 +5,21 @@ class TodosController < ApplicationController
   respond_to :html
 
   def index
-    @todos   = Todo.order("#{sort_column} #{sort_direction}")
-    @done    = Todo.where(status: 'done').to_a
-    @started = Todo.where(status: 'started').to_a
-    @new     = Todo.where(status: 'new').to_a
+    @todos   = Todo.includes(:requester, :assignee).order("#{sort_column} #{sort_direction}")
+    @done    = Todo.where(status: 'done').count
+    @started = Todo.where(status: 'started').count
+    @new     = Todo.where(status: 'new').count
+  end
+
+  def my_todos
+    @todos = Todo.includes(:requester, :assignee)
+      .order("#{sort_column} #{sort_direction}")
+      .where(assignee_id: current_user.id)
+    @done    = Todo.where(status: 'done').count
+    @started = Todo.where(status: 'started').count
+    @new     = Todo.where(status: 'new').count
+
+    render :index
   end
 
   def show
