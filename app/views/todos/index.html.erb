@@ -1,13 +1,13 @@
 <h1>Listing todos</h1>
 
-<%= @done.size %> done, <%= @started.size %> started, <%= @new.size %> new
+<%= @done %> done, <%= @started %> started, <%= @new %> new
 
 <table class="table table-striped">
   <thead>
     <tr>
       <th><%= sortable :description %></th>
       <th><%= sortable :status %></th>
-      <th><%= sortable :requester %></th>
+      <th>Reqester</th>
       <th>Assignee</th>
       <th></th>
       <th></th>
@@ -17,7 +17,7 @@
 
   <tbody>
     <% @todos.each do |todo| %>
-      <tr>
+      <tr class="<%= todo.deadline_exceeded? ? "danger" : nil %>">
         <td><%= todo.description %></td>
         <td>
           <span class="label label-<%= if todo.status == 'done' then 'success'; elsif todo.status == 'started' then 'warning'; else 'default' end%>">
@@ -33,6 +33,8 @@
     <% end %>
   </tbody>
 </table>
+
+<%= will_paginate @todos, renderer: BootstrapPagination::Rails %>
 
 <br>
 

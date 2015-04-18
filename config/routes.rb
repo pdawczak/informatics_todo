@@ -8,6 +8,8 @@ InformaticsTodo::Application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'todos#index'
 
+  get "my_todos" => "todos#my_todos"
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

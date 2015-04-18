@@ -48,3 +48,5 @@ end
 gem 'devise'
 gem 'enumerize'
 gem 'bootstrap-sass', '~> 3.3.4'
+gem 'will_paginate', '~> 3.0.6'
+gem 'will_paginate-bootstrap'
