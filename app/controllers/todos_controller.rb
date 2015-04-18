@@ -63,7 +63,7 @@ class TodosController < ApplicationController
 
   private
     def todo_params
-      params.require(:todo).permit(:description, :status, :requester_id, :assignee_id)
+      params.require(:todo).permit(:description, :status, :requester_id, :assignee_id, :deadline)
     end
 
     def sort_column
