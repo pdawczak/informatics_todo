@@ -5,7 +5,7 @@ class TodosController < ApplicationController
   respond_to :html
 
   def index
-    @todos   = Todo.includes(:requester, :assignee).order("#{sort_column} #{sort_direction}")
+    @todos   = Todo.includes(:requester, :assignee).order("#{sort_column} #{sort_direction}").paginate(:page => params[:page])
     @done    = Todo.where(status: 'done').count
     @started = Todo.where(status: 'started').count
     @new     = Todo.where(status: 'new').count
@@ -13,7 +13,7 @@ class TodosController < ApplicationController
 
   def my_todos
     @todos = Todo.includes(:requester, :assignee)
-      .order("#{sort_column} #{sort_direction}")
+      .order("#{sort_column} #{sort_direction}").paginate(:page => params[:page])
       .where(assignee_id: current_user.id)
     @done    = Todo.where(status: 'done').count
     @started = Todo.where(status: 'started').count
@@ -30,6 +30,7 @@ class TodosController < ApplicationController
   def new
     @users = User.order(:email)
     @todo = Todo.new
+    @todo.requester = current_user
     respond_with(@todo)
   end
 
