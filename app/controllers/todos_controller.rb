@@ -1,10 +1,13 @@
 class TodosController < ApplicationController
   before_action :authenticate_user!
-  helper_method :sort_column, :sort_direction
   before_action :set_todo, only: [:show, :edit, :update, :destroy]
   before_action :set_users, only: [:new, :edit, :create, :update]
 
   respond_to :html
+
+  # defined in ApplicationController
+  # it registers helper_methods like :sort_column and :sort_direction
+  sortable_by :description, :status, :requester, :assignee, default: :description
 
   def index
     @presenter = TodoPresenter.new(sort_column:    sort_column,
@@ -51,16 +54,6 @@ class TodosController < ApplicationController
   private
     def todo_params
       params.require(:todo).permit(:description, :status, :requester_id, :assignee_id, :deadline)
-    end
-
-    def sort_column
-      sort = params[:sort]
-      sort && %w(description status requester assignee).include?(sort) ? sort : "description"
-    end
-
-    def sort_direction
-      direction = params[:direction]
-      direction && ["asc", "desc"].include?(direction) ? direction : "asc"
     end
 
     def set_todo
